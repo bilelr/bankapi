@@ -2,7 +2,7 @@ package com.github.bilalr.bankapi.controller;
 
 import com.github.bilalr.bankapi.model.Account;
 import com.github.bilalr.bankapi.model.Balance;
-import com.github.bilalr.bankapi.repository.AccountRepository;
+import com.github.bilalr.bankapi.service.AccountService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +29,11 @@ class AccountControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
     @Test
     void testGetAccountBalance() throws Exception {
-        when(accountRepository.getAccountBalance(1, 1)).thenReturn(
+        when(accountService.getAccountBalance(1, 1)).thenReturn(
                 Optional.of(new Balance(BigDecimal.TEN, "EUR"))
         );
 
@@ -60,7 +60,7 @@ class AccountControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
-        Mockito.verify(accountRepository, times(1)).createAccount(account);
+        Mockito.verify(accountService, times(1)).createAccount(account);
     }
 
     @Test
@@ -71,7 +71,7 @@ class AccountControllerTest {
                 new Account(3, 1, BigDecimal.ZERO, "USD")
         );
 
-        when(accountRepository.getAllCustomerAccounts(1)).thenReturn(accounts);
+        when(accountService.getAllCustomerAccounts(1)).thenReturn(accounts);
 
         this.mockMvc.perform(get("/api/customers/1/accounts"))
                 .andExpect(status().isOk())

@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class CustomerRepository {
@@ -15,8 +16,15 @@ public class CustomerRepository {
     }
 
     public List<Customer> getAllCustomers() {
-        return jdbcClient.sql("SELECT * from Customer")
+        return jdbcClient.sql("SELECT * FROM Customer")
                 .query(Customer.class)
                 .list();
+    }
+
+    public Optional<Customer> getCustomerById(Integer customerId) {
+        return jdbcClient.sql("SELECT * FROM Customer WHERE id = :customerId")
+                .param("customerId", customerId)
+                .query(Customer.class)
+                .optional();
     }
 }
